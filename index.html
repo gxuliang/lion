@@ -128,7 +128,12 @@
          //alert("aa:" + response[0].toString());	 
 
          var obj = jQuery.parseJSON(response[0].toString());
-         alert(obj.method.toString());
+         var name = (obj.pam.local.base.name.toString());
+         var lan = obj.pam.local.base.lan.toString();
+         document.getElementById("macname").value = name;
+         document.getElementById("maclan").value = lan;
+         $("#resOK").show();
+         $("#resOK").hide(2000);
 		   
        } else
          alert("status is " + request.status);
@@ -245,7 +250,7 @@
 				<tr> 
     				<td><li></li></td> 
     				<td>设备名称</td> 
-    				<td><input type="text" style="width:92%;"></td> 
+    				<td><input id = "macname" type="text" style="width:92%;"></td> 
     				<td/>
     				<td/>
 				</tr> 
@@ -253,9 +258,9 @@
     				<td><li></li></td> 
     				<td>语言设置</td> 
     				<td>
-	    				<select style="width:92%;">
-							<option>简体中文</option>
-							<option>英语</option>
+	    				<select id = "maclan" style="width:92%;">
+							<option value="chn">简体中文</option>
+							<option value="eng">英语</option>
 						</select>
     				</td> 
     				<td/>
@@ -283,7 +288,7 @@
     				<td>
 	   					<input type="submit" value="恢复默认">
 	   					<input type="submit" value="确定" class="alt_btn" onclick="setMacName();">
-	   					<input type="submit" value="取消">
+	   					<input onclick="getRoot()" type="submit" value="刷新">
     				</td> 
 				</tr>  
 			</tbody> 
@@ -791,7 +796,7 @@
 		</div><!-- end of .tab_container -->
 		</article><!-- end of content manager article -->		
 		
-		<h4 id = "resOK" class="alert_success">配置成功</h4>
+		<h4 id = "resOK" class="alert_success">操作成功</h4>
 		<div class="clear"></div>
 		
 		

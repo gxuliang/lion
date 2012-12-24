@@ -5,18 +5,30 @@
  *      Author: xul
  */
 
-
+#include<sys/stat.h>
+#include<fcntl.h>
+#include<unistd.h>
+#include<sys/types.h>
+#include<sys/socket.h>
+#include<netinet/in.h>
+#include<arpa/inet.h>
 #include <stdio.h>
 #include "cgic/cgic.h"
 
-const StrLen = 1024*1024;
+#define StrLen 1024*1024
 char sendstr[StrLen]="";
 char recvstr[StrLen]="";
+int fd;
+struct sockaddr_in	addr;
+
+int tcpClient(char* ip, short int port);
+int tcpClientConnect();
+int tcpSend(char* str);
+int tcpRecv(char* str);
 
 int cgiMain()
 {
 	tcpClient("127.0.0.1", 8086);
-	tcpInit();
 	tcpClientConnect();
 
 	cgiHeaderContentType("text/html;charset=gb2312");
@@ -31,6 +43,8 @@ int cgiMain()
 	{
 		printf("error\n");
 	}
+
+	close(fd);
 
 	return 1;
 #if 0
@@ -50,8 +64,8 @@ int cgiMain()
 
 int tcpClient(char* ip, short int port)
 {
-    int fd;
-    struct sockaddr_in	addr;
+
+
     fd = socket( AF_INET, SOCK_STREAM, 0 );
 
     if (fd < 0)
@@ -71,12 +85,20 @@ int tcpClient(char* ip, short int port)
 
     bzero(&addr, sizeof(addr));
     addr.sin_family		= AF_INET;
-    addr.sin_addr.s_addr	= (ip);
+    addr.sin_addr.s_addr	= inet_addr(ip);
     addr.sin_port		= htons(port);
 
 
 
-    printf("it will connect to serv!ip is %s, port = %d\n", sys_ip2str_static(ip), port);
+
+    return fd;
+
+}
+
+
+int tcpClientConnect()
+{
+
 
     if ( connect( fd, (const struct sockaddr *)&addr, sizeof(addr)) < 0 )
     {
@@ -85,8 +107,26 @@ int tcpClient(char* ip, short int port)
         return -1;
     }
 
-    printf(" connect to serv ok!\n");
-    return fd;
-
+    //printf(" connect to serv ok!\n");
+    return 1;
 }
 
+int tcpSend(char* str)
+{
+	int ret = send(fd, str, strlen(str), 0);
+	if (ret < 0)
+	{
+		perror("send");
+	}
+	return ret;
+}
+
+int tcpRecv(char* str)
+{
+	int ret = recv(fd, str, StrLen, 0);
+	if(ret < 0)
+	{
+		perror("recv");
+	}
+	return ret;
+}
