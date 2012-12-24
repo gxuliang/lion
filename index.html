@@ -1,0 +1,804 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8"/>
+	<title>Dashboard I Admin Panel</title>
+	
+	<link rel="stylesheet" href="css/layout.css" type="text/css" media="screen" />
+	<!--[if lt IE 9]>
+	<link rel="stylesheet" href="css/ie.css" type="text/css" media="screen" />
+	<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<script src="js/jquery-1.5.2.min.js" type="text/javascript"></script>
+	<script src="js/hideshow.js" type="text/javascript"></script>
+	<script src="js/jquery.tablesorter.min.js" type="text/javascript"></script>
+	<script src="js/jquery.json-2.4.min.js" type="text/javascript"></script>
+	<script type="text/javascript" src="js/jquery.equalHeight.js"></script>
+	<script type="text/javascript">
+	$(document).ready(function() 
+    	{ 
+      	  $(".tablesorter").tablesorter(); 
+   	 } 
+	);
+	$(document).ready(function() {
+	
+	
+
+	//When page loads...
+	$(".tab_local").hide(); //Hide all content
+	$(".tab_usr").hide(); //Hide all usr
+	$("ul.tabs li:first").addClass("active").show(); //Activate first tab
+	$(".tab_local:first").show(); //Show first tab content
+	$(".width_3_quarter").hide();
+	$(".width_full").hide();
+
+
+	$("#local").show();
+	$("#resOK").hide();
+	
+	getRoot();
+
+
+	//On Click Event
+	$("ul.tabs li").click(function() {
+
+		$("ul.tabs li").removeClass("active"); //Remove any "active" class
+		//alert(this);
+		$(this).addClass("active"); //Add "active" class to selected tab
+		$(".tab_local").hide(); //Hide all tab content
+		$(".tab_usr").hide(); //Hide all tab usr
+
+		var activeTab = $(this).find("a").attr("href"); //Find the href attribute value to identify the active tab + content
+		$(activeTab).fadeIn(); //Fade in the active ID content
+		
+		return false;
+	});
+	
+	//On Click Event
+	$("ul.toggle li").click(function() {
+
+		$(".width_3_quarter").hide();
+		$(".width_quarter").hide();
+		$(".width_full").hide();
+		$(".tab_local").hide(); //Hide all content
+		$(".tab_usr").hide(); //Hide all usr
+
+
+		var activeTab = $(this).find("a").attr("href"); //Find the href attribute value to identify the active tab + content
+		$(activeTab).fadeIn(); //Fade in the active ID content		
+		
+		var aa = ".tab_" + activeTab.substr(1) + ":first";
+		//alert(aa);
+		$("ul.tabs li").removeClass("active"); //Remove any "active" class
+		var bb = "#tab_" + activeTab.substr(1) + " li:first";
+		$(bb).addClass("active").show(); //Activate first tab
+		$(aa).show(); //Show first tab content
+		
+		
+		return false;
+	});
+
+});
+    </script>
+    <script type="text/javascript">
+    $(function(){
+        $('.column').equalHeight();
+    });
+</script>
+
+<!-- xul -->
+<script language="javascript" type="text/javascript">
+   var request = false;
+   try {
+     request = new XMLHttpRequest();
+   } catch (trymicrosoft) {
+     try {
+       request = new ActiveXObject("Msxml2.XMLHTTP");
+     } catch (othermicrosoft) {
+       try {
+         request = new ActiveXObject("Microsoft.XMLHTTP");
+       } catch (failed) {
+         request = false;
+       }  
+     }
+   }
+   if (!request)
+     alert("Error initializing XMLHttpRequest!");
+     
+   function getRoot() {
+	   var name = {id:1,jsonrpc:"2.0",method:"getroot"};
+	   var encoded = $.toJSON( name );
+	   var url = "cgi-bin/post.cgi";
+	   //alert(url.toString());
+	   request.open("POST", url, true);
+	   request.onreadystatechange = updateRoot;
+	   request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;charset=gb2312");
+	   var chr = "phone=" + encoded.toString();
+	   request.send(chr.toString());
+	   //alert("chr is :" + chr.toString());
+	   
+   }
+   
+   function updateRoot() {
+      if (request.readyState == 4) {
+	  //alert("status is fewe");
+       if (request.status == 200) {
+         var response = request.responseText.split("|");
+         //alert("aa:" + response[0].toString());	 
+
+         var obj = jQuery.parseJSON(response[0].toString());
+         alert(obj.method.toString());
+		   
+       } else
+         alert("status is " + request.status);
+     }
+   }
+   
+   function getCustomerInfo() {
+  var phone = document.getElementById("phone").value;
+     //var url = "/cgi-bin/tcp-client.cgi?phone=" + escape(phone);
+	 var url = "cgi-bin/post.cgi?phone=" + escape(phone);
+     request.open("POST", url, true);
+	request.onreadystatechange = updatePage;
+	request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;charset=gb2312");
+	phone = "phone=" + phone;
+     request.send(phone.toString());
+	 alert("phone is " + phone.toString());
+   }
+   function updatePage() {
+      if (request.readyState == 4) {
+	  //alert("status is fewe");
+       if (request.status == 200) {
+         var response = request.responseText.split("|");
+         document.getElementById("order").value = response[0];
+         document.getElementById("address").innerHTML =
+           response[1].replace(/\n/g, "");
+		   
+		   
+       } else
+         alert("status is " + request.status);
+     }
+   }
+</script>
+
+
+</head>
+
+
+<body>
+
+	<header id="header">
+		<hgroup>
+			<h1 class="site_title"><a href="index.html">Website Admin</a></h1>
+			<h2 class="section_title">Dashboard</h2><div class="btn_view_site"><a href="http://www.medialoot.com">View Site</a></div>
+		</hgroup>
+	</header> <!-- end of header bar -->
+	
+	<section id="secondary_bar">
+		<div class="user">
+			<p>John Doe (<a href="#">3 Messages</a>)</p>
+			<!-- <a class="logout_user" href="#" title="Logout">Logout</a> -->
+		</div>
+		<div class="breadcrumbs_container">
+			<article class="breadcrumbs"><a href="index.html">Website Admin</a> <div class="breadcrumb_divider"></div> <a class="current">Dashboard</a></article>
+		</div>
+	</section><!-- end of secondary bar -->
+	
+	<aside id="sidebar" class="column">
+		<form class="quick_search">
+			<input type="text" value="Quick Search" onfocus="if(!this._haschanged){this.value=''};this._haschanged=true;">
+		</form>
+		<hr/>
+		<h3>普通设置</h3>
+		<ul class="toggle">
+			<li class="icn_new_article"><a href="#local">本机设置</a></li>
+			<li class="icn_edit_article"><a href="#usr">用户管理</a></li>
+			<li class="icn_categories"><a href="#">出厂默认设置</a></li>
+			<li class="icn_tags"><a href="#">自动维护</a></li>
+		</ul>
+		<h3>存储设置</h3>
+		<ul class="toggle">
+			<li class="icn_add_user"><a href="#">Add New User</a></li>
+			<li class="icn_view_users"><a href="#">View Users</a></li>
+			<li class="icn_profile"><a href="#">Your Profile</a></li>
+		</ul>
+		<h3>网络设置</h3>
+		<ul class="toggle">
+			<li class="icn_folder"><a href="#tcpip">TCP/IP</a></li>
+			<li class="icn_photo"><a href="#connect">连接</a></li>
+			<li class="icn_audio"><a href="#pppoe">PPPoE</a></li>
+			<li class="icn_video"><a href="#ddns">DDNS</a></li>
+			<li class="icn_video"><a href="#smtp">SMTP（邮件）</a></li>
+			<li class="icn_video"><a href="#autoreg">自动注册</a></li>
+		</ul>
+		<h3>Admin</h3>
+		<ul class="toggle">
+			<li class="icn_settings"><a href="#">Options</a></li>
+			<li class="icn_security"><a href="#">Security</a></li>
+			<li class="icn_jump_back"><a href="#">Logout</a></li>
+		</ul>
+		
+		<footer>
+			<hr />
+			<p><strong>Copyright &copy; 2011 Website Admin</strong></p>
+			<p>Theme by <a href="http://www.medialoot.com">MediaLoot</a></p>
+		</footer>
+	</aside><!-- end of sidebar -->
+	
+	<section id="main" class="column">
+		
+		
+		
+		<article class="module width_3_quarter" id="local">
+		<header><h3 class="tabs_involved">本机设置</h3>
+		<ul class="tabs" id=tab_local>
+   			<li><a href="#tab1">基本设置</a></li>
+    		<li><a href="#tab2">时间设置</a></li>
+		</ul>
+		</header>
+
+		<div class="tab_container">
+			<div id="tab1" class="tab_local">
+			<table class="tablesorter" cellspacing="0"> 
+			<tbody> 
+				<tr> 
+    				<td><li></li></td> 
+    				<td>设备名称</td> 
+    				<td><input type="text" style="width:92%;"></td> 
+    				<td/>
+    				<td/>
+				</tr> 
+				<tr> 
+    				<td><li></li></td> 
+    				<td>语言设置</td> 
+    				<td>
+	    				<select style="width:92%;">
+							<option>简体中文</option>
+							<option>英语</option>
+						</select>
+    				</td> 
+    				<td/>
+    				<td/>
+				</tr>
+				<tr> 
+   					<td></td> 
+    				<td></td> 
+    				<td></td> 
+    				<td></td> 
+    				<td></td> 
+				</tr> 
+				<tr> 
+   					<td></td> 
+    				<td></td> 
+    				<td></td> 
+    				<td></td> 
+    				<td></td> 
+				</tr>
+				<tr> 
+   					<td></td> 
+    				<td></td> 
+    				<td></td> 
+    				<td></td> 
+    				<td>
+	   					<input type="submit" value="恢复默认">
+	   					<input type="submit" value="确定" class="alt_btn" onclick="setMacName();">
+	   					<input type="submit" value="取消">
+    				</td> 
+				</tr>  
+			</tbody> 
+			</table>
+			</div><!-- end of #tab1 -->
+			
+			<div id="tab2" class="tab_local">
+			<fieldset>
+			<table class="tablesorter" cellspacing="0"> 
+				<tr> 
+   					<td><li/></td> 
+    				<td>日期格式</td> 
+    				<td>
+    					<select style="width:92%;">
+							<option>年-月-日</option>
+							<option>日-月-年</option>
+						</select>
+    				</td> 
+   					<td></td> 
+   					<td></td> 
+				</tr> 
+				<tr> 
+   					<td><li/></td> 
+   					<td>时间格式</td>
+    				<td>
+    					<select style="width:92%;">
+							<option>24-小时制</option>
+							<option>12-小时制</option>
+						</select>
+    				</td> 
+   					<td></td> 
+   					<td></td> 
+				<tr> 
+   					<td><li/></td> 
+    				<td>时区</td> 
+    				<td>
+    					<select style="width:92%;">
+							<option>GMT+08:00</option>
+							<option>GMT+09:00</option>
+						</select>
+    				</td>
+   					<td></td> 
+   					<td></td> 
+				</tr>
+				<tr> 
+   					<td><li/></td> 
+    				<td>系统时间</td> 
+    				<td><input type="text" style="width:92%;" value="2012-12-06"></td> 
+    				<td><input type="text" style="width:92%;" value="23:00"></td> 
+    				<td>	   					
+    					<input type="submit" value="同步PC">
+    				</td> 
+				</tr> 
+			</tbody> 
+			</table>
+			</fieldset>
+			
+			<fieldset>
+			<table class="tablesorter" cellspacing="0"> 
+				<tr> 
+   					<td><input type="checkbox"></td> 
+    				<td>NTP对时</td> 
+    				<td></td> 
+   					<td></td> 
+   					<td></td> 
+				</tr> 
+				<tr> 
+   					<td><li/></td> 
+   					<td>NTP服务器</td>
+    				<td><input type="text" style="width:92%;" value="clock.isc.org"></td> 
+   					<td></td> 
+   					<td></td> 
+				<tr> 
+   					<td><li/></td> 
+    				<td>端口</td> 
+    				<td><input type="text" style="width:92%;" value="37"></td> 
+   					<td></td> 
+   					<td></td> 
+				</tr>
+				<tr> 
+   					<td><li/></td> 
+    				<td>更新周期</td> 
+    				<td><input type="text" style="width:92%;" value="10"></td> 
+   					<td>分钟（0~30）</td> 
+   					<td></td> 
+				</tr> 
+   					<td></td> 
+   					<td></td> 
+   					<td></td> 
+   					<td></td> 
+    				<td>
+	   					<input type="submit" value="恢复默认">
+	   					<input type="submit" value="确定" class="alt_btn">
+	   					<input type="submit" value="取消">
+    				</td> 
+				</tr> 
+			</tbody> 
+			</table>
+			</fieldset>
+			
+			</div><!-- end of #tab2 -->
+			
+		</div><!-- end of .tab_container -->
+		</article><!-- end of content manager article -->
+		
+		
+		
+		<div class="clear"></div>
+		
+		
+		<article class="module width_full" id="connect">
+			<header><h3>连接</h3></header>
+			<table class="tablesorter" cellspacing="0"> 
+				<tr> 
+   					<td><li/></td> 
+    				<td>最大连接数</td> 
+    				<td><input type="text" style="width:92%;" value="10"></td> 
+   					<td>（1~20）</td> 
+   					<td></td> 
+				</tr> 
+				<tr> 
+   					<td><li/></td> 
+   					<td>TCP端口</td>
+    				<td><input type="text" style="width:92%;" value="37777"></td> 
+   					<td>（1025~65535）</td> 
+   					<td></td> 
+				<tr> 
+   					<td><li/></td> 
+    				<td>UDP端口</td> 
+    				<td><input type="text" style="width:92%;" value="37778"></td> 
+   					<td>（1025~65535）</td> 
+   					<td></td> 
+				</tr>
+				<tr> 
+   					<td><li/></td> 
+    				<td>RTSP端口</td> 
+    				<td><input type="text" style="width:92%;" value="554"></td> 
+   					<td></td> 
+   					<td></td> 
+				</tr> 
+				<tr>
+   					<td></td> 
+   					<td></td> 
+   					<td></td> 
+   					<td></td> 
+    				<td>
+	   					<input type="submit" value="恢复默认">
+	   					<input type="submit" value="确定" class="alt_btn">
+	   					<input type="submit" value="取消">
+    				</td> 
+				</tr> 
+			</tbody> 
+			</table>
+			
+		</article>
+
+
+		<div class="clear"></div>
+		
+		
+		<article class="module width_full" id="pppoe">
+			<header><h3>PPPoE</h3></header>
+			<table class="tablesorter" cellspacing="0"> 
+				<tr> 
+   					<td><input type="checkbox"></td> 
+    				<td>PPPoE开启</td> 
+   					<td></td> 
+   					<td></td> 
+   					<td></td> 
+				</tr> 
+				<tr> 
+   					<td><li/></td> 
+   					<td>账号</td>
+    				<td><input type="text" style="width:92%;" value=""></td> 
+   					<td></td> 
+   					<td></td> 
+				<tr> 
+   					<td><li/></td> 
+    				<td>密码</td> 
+    				<td><input type="password" style="width:92%;" value=""></td> 
+   					<td></td> 
+   					<td></td> 
+				</tr>
+				<tr> 
+   					<td></td> 
+   					<td><input type="checkbox"></td> 
+    				<td>自动连接</td> 
+   					<td></td> 
+   					<td></td> 
+				</tr> 
+				<tr>
+   					<td></td> 
+   					<td></td> 
+   					<td></td> 
+   					<td></td> 
+    				<td>
+	   					<input type="submit" value="恢复默认">
+	   					<input type="submit" value="确定" class="alt_btn">
+	   					<input type="submit" value="取消">
+    				</td> 
+				</tr> 
+			</tbody> 
+			</table>
+			
+		</article>
+
+
+		<div class="clear"></div>
+		
+		
+		<article class="module width_full" id="ddns">
+			<header><h3>DDNS</h3></header>
+			<table class="tablesorter" cellspacing="0"> 
+				<tr> 
+   					<td><input type="checkbox"></td> 
+    				<td>服务器类型</td> 
+    				<td>
+    					<select style="width:92%;">
+							<option>CN99 DDNS</option>
+							<option>花生壳</option>
+						</select>
+    				</td>
+   					<td>（1~20）</td> 
+   					<td></td> 
+				</tr> 
+				<tr> 
+   					<td><li/></td> 
+   					<td>服务器地址</td>
+    				<td><input type="text" style="width:92%;" value=""></td> 
+   					<td></td> 
+   					<td></td> 
+				<tr> 
+   					<td><li/></td> 
+    				<td>服务器端口</td> 
+    				<td><input type="text" style="width:92%;" value="80"></td> 
+   					<td>（1~65535）</td> 
+   					<td></td> 
+				</tr>
+				<tr> 
+   					<td><li/></td> 
+    				<td>域名</td> 
+    				<td><input type="text" style="width:92%;" value="none"></td> 
+   					<td></td> 
+   					<td></td> 
+				</tr> 
+				<tr> 
+   					<td><li/></td> 
+    				<td>用户名</td> 
+    				<td><input type="text" style="width:92%;" value="none"></td> 
+   					<td></td> 
+   					<td></td> 
+				</tr> 
+				<tr> 
+   					<td><li/></td> 
+    				<td>密码</td> 
+    				<td><input type="password" style="width:92%;" value="none"></td> 
+   					<td></td> 
+   					<td></td> 
+				</tr> 
+				<tr> 
+   					<td><li/></td> 
+    				<td>保活时间</td> 
+    				<td><input type="text" style="width:92%;" value="5"></td> 
+   					<td>分钟（1~500）</td> 
+   					<td></td> 
+				</tr> 
+				<tr>
+   					<td></td> 
+   					<td></td> 
+   					<td></td> 
+   					<td></td> 
+    				<td>
+	   					<input type="submit" value="恢复默认">
+	   					<input type="submit" value="确定" class="alt_btn">
+	   					<input type="submit" value="取消">
+    				</td> 
+				</tr> 
+			</tbody> 
+			</table>
+			
+		</article>
+
+
+		<div class="clear"></div>
+		
+		
+		<article class="module width_full" id="tcpip">
+			<header><h3>TCP/IP</h3></header>
+			<table class="tablesorter" cellspacing="0"> 
+				<tr> 
+   					<td><li/></td> 
+    				<td>主机名称</td> 
+    				<td><input type="text" style="width:92%;" value="IPC"></td> 
+   					<td></td> 
+   					<td></td> 
+				</tr> 
+				<tr> 
+   					<td><li/></td> 
+   					<td>网卡</td>
+    				<td>
+    					<select style="width:92%;">
+							<option>有线（默认）</option>
+							<option>WIFI</option>
+						</select>
+    				</td> 
+   					<td></td> 
+   					<td></td> 
+				<tr> 
+   					<td><li/></td> 
+    				<td>模式</td> 
+    				<td>
+    					<select style="width:92%;">
+							<option>静态</option>
+							<option>DHCP</option>
+						</select>
+    				</td> 
+   					<td></td> 
+   					<td></td> 
+				</tr>
+				<tr> 
+   					<td><li/></td> 
+    				<td>MAC地址</td> 
+    				<td><input type="text" style="width:92%;" value="10:22:E1:34:21:12" readonly="true"></td> 
+   					<td></td> 
+   					<td></td> 
+				</tr> 
+				<tr> 
+   					<td><li/></td> 
+    				<td>IP版本</td> 
+    				<td>
+    					<select style="width:92%;">
+							<option>IPv4</option>
+							<option>IPv6</option>
+						</select>
+    				</td> 
+   					<td></td> 
+   					<td></td> 
+				</tr>
+				<tr> 
+   					<td><li/></td> 
+    				<td>IP地址</td> 
+    				<td><input type="text" style="width:92%;" value="192.168.2.108"></td> 
+   					<td></td> 
+   					<td></td> 
+				</tr> 
+				<tr> 
+   					<td><li/></td> 
+    				<td>子网掩码</td> 
+    				<td><input type="text" style="width:92%;" value="255.255.255.0"></td> 
+   					<td></td> 
+   					<td></td> 
+				</tr> 
+				<tr> 
+   					<td><li/></td> 
+    				<td>默认网关</td> 
+    				<td><input type="text" style="width:92%;" value="192.168.2.1"></td> 
+   					<td></td> 
+   					<td></td> 
+				</tr> 
+				<tr> 
+   					<td><li/></td> 
+    				<td>首先DSN服务器</td> 
+    				<td><input type="text" style="width:92%;" value="8.8.8.8"></td> 
+   					<td></td> 
+   					<td></td> 
+				</tr> 
+				<tr> 
+   					<td><li/></td> 
+    				<td>备用DSN服务器</td> 
+    				<td><input type="text" style="width:92%;" value="8.8.8.8"></td> 
+   					<td></td> 
+   					<td></td> 
+				</tr> 
+				<tr>
+   					<td></td> 
+   					<td></td> 
+   					<td></td> 
+   					<td></td> 
+    				<td>
+	   					<input type="submit" value="恢复默认">
+	   					<input type="submit" value="确定" class="alt_btn">
+	   					<input type="submit" value="取消">
+    				</td> 
+				</tr> 
+			</tbody> 
+			</table>
+			
+		</article>
+
+
+		<div class="clear"></div>
+
+		<article class="module width_3_quarter" id="usr">
+		<header><h3 class="tabs_involved">用户管理</h3>
+		<ul class="tabs" id="tab_usr">
+   			<li><a href="#tab3">用户</a></li>
+    		<li><a href="#tab4">用户组</a></li>
+		</ul>
+		</header>
+
+		<div class="tab_container">
+			<div id="tab3" class="tab_usr">
+			<table class="tablesorter" cellspacing="0"> 
+			<thead> 
+				<tr> 
+   					<th></th> 
+    				<th>Entry Name</th> 
+    				<th>Category</th> 
+    				<th>Created On</th> 
+    				<th>Actions</th> 
+				</tr> 
+			</thead> 
+			<tbody> 
+				<tr> 
+   					<td><input type="checkbox"></td> 
+    				<td>Lorem Ipsum Dolor Sit Amet</td> 
+    				<td>Articles</td> 
+    				<td>5th April 2011</td> 
+    				<td><input type="image" src="images/icn_edit.png" title="Edit"><input type="image" src="images/icn_trash.png" title="Trash"></td> 
+				</tr> 
+				<tr> 
+   					<td><input type="checkbox"></td> 
+    				<td>Ipsum Lorem Dolor Sit Amet</td> 
+    				<td>Freebies</td> 
+    				<td>6th April 2011</td> 
+   				 	<td><input type="image" src="images/icn_edit.png" title="Edit"><input type="image" src="images/icn_trash.png" title="Trash"></td> 
+				</tr>
+				<tr> 
+   					<td><input type="checkbox"></td> 
+    				<td>Sit Amet Dolor Ipsum</td> 
+    				<td>Tutorials</td> 
+    				<td>10th April 2011</td> 
+    				<td><input type="image" src="images/icn_edit.png" title="Edit"><input type="image" src="images/icn_trash.png" title="Trash"></td> 
+				</tr> 
+				<tr> 
+   					<td><input type="checkbox"></td> 
+    				<td>Dolor Lorem Amet</td> 
+    				<td>Articles</td> 
+    				<td>16th April 2011</td> 
+   				 	<td><input type="image" src="images/icn_edit.png" title="Edit"><input type="image" src="images/icn_trash.png" title="Trash"></td> 
+				</tr>
+				<tr> 
+   					<td><input type="checkbox"></td> 
+    				<td>Dolor Lorem Amet</td> 
+    				<td>Articles</td> 
+    				<td>16th April 2011</td> 
+   				 	<td><input type="image" src="images/icn_edit.png" title="Edit"><input type="image" src="images/icn_trash.png" title="Trash"></td> 
+				</tr>  
+			</tbody> 
+			</table>
+			</div><!-- end of #tab1 -->
+			
+			<div id="tab4" class="tab_usr">
+			<table class="tablesorter" cellspacing="0"> 
+			<thead> 
+				<tr> 
+   					<th></th> 
+    				<th>Comment</th> 
+    				<th>Posted by</th> 
+    				<th>Posted On</th> 
+    				<th>Actions</th> 
+				</tr> 
+			</thead> 
+			<tbody> 
+				<tr> 
+   					<td><input type="checkbox"></td> 
+    				<td>Lorem Ipsum Dolor Sit Amet</td> 
+    				<td>Mark Corrigan</td> 
+    				<td>5th April 2011</td> 
+    				<td><input type="image" src="images/icn_edit.png" title="Edit"><input type="image" src="images/icn_trash.png" title="Trash"></td> 
+				</tr> 
+				<tr> 
+   					<td><input type="checkbox"></td> 
+    				<td>Ipsum Lorem Dolor Sit Amet</td> 
+    				<td>Jeremy Usbourne</td> 
+    				<td>6th April 2011</td> 
+   				 	<td><input type="image" src="images/icn_edit.png" title="Edit"><input type="image" src="images/icn_trash.png" title="Trash"></td> 
+				</tr>
+				<tr> 
+   					<td><input type="checkbox"></td> 
+    				<td>Sit Amet Dolor Ipsum</td> 
+    				<td>Super Hans</td> 
+    				<td>10th April 2011</td> 
+    				<td><input type="image" src="images/icn_edit.png" title="Edit"><input type="image" src="images/icn_trash.png" title="Trash"></td> 
+				</tr> 
+				<tr> 
+   					<td><input type="checkbox"></td> 
+    				<td>Dolor Lorem Amet</td> 
+    				<td>Alan Johnson</td> 
+    				<td>16th April 2011</td> 
+   				 	<td><input type="image" src="images/icn_edit.png" title="Edit"><input type="image" src="images/icn_trash.png" title="Trash"></td> 
+				</tr> 
+				<tr> 
+   					<td><input type="checkbox"></td> 
+    				<td>Dolor Lorem Amet</td> 
+    				<td>Dobby</td> 
+    				<td>16th April 2012</td> 
+   				 	<td><input type="image" src="images/icn_edit.png" title="Edit"><input type="image" src="images/icn_trash.png" title="Trash"></td> 
+				</tr> 
+			</tbody> 
+			</table>
+
+			</div><!-- end of #tab2 -->
+			
+		</div><!-- end of .tab_container -->
+		</article><!-- end of content manager article -->		
+		
+		<h4 id = "resOK" class="alert_success">配置成功</h4>
+		<div class="clear"></div>
+		
+		
+		<div class="spacer"></div>
+	</section>
+
+
+</body>
+
+</html>
