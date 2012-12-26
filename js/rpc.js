@@ -33,3 +33,35 @@ function getRoot() {
          alert("status is " + request.status);
      }
    }
+
+function onLogin() {
+
+	$("#flogin").hide();
+	$("#mbody").show();
+
+	
+	$(".tab_local").hide(); //Hide all content
+	$(".tab_usr").hide(); //Hide all usr
+	$("ul.tabs li:first").addClass("active").show(); //Activate first tab
+	$(".tab_local:first").show(); //Show first tab content
+	$(".width_3_quarter").hide();
+	$(".width_full").hide();
+
+
+	$("#local").show();
+	$("#resOK").hide();
+	
+	getRoot();
+
+
+
+}
+
+
+function onLogout()
+{
+	$("#mbody").hide();
+	$("#flogin").show();
+	
+	
+}

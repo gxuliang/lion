@@ -6,6 +6,8 @@
 	<title>Dashboard I Admin Panel</title>
 	
 	<link rel="stylesheet" href="css/layout.css" type="text/css" media="screen" />
+	<link rel="stylesheet" href="css/login.css" type="text/css" media="screen" />
+
 	<!--[if lt IE 9]>
 	<link rel="stylesheet" href="css/ie.css" type="text/css" media="screen" />
 	<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -24,9 +26,8 @@
 	);
 	$(document).ready(function() {
 	
-	
-
-	//When page loads...
+	$("#mbody").hide();
+/*		//When page loads...
 	$(".tab_local").hide(); //Hide all content
 	$(".tab_usr").hide(); //Hide all usr
 	$("ul.tabs li:first").addClass("active").show(); //Activate first tab
@@ -37,10 +38,11 @@
 
 	$("#local").show();
 	$("#resOK").hide();
+
 	
 	getRoot();
 
-
+*/
 	//On Click Event
 	$("ul.tabs li").click(function() {
 
@@ -141,6 +143,19 @@
 
 <body>
 
+<div id="flogin">
+    <h1 id= "h1login">Log In</h1>
+    <fieldset id="inputs">
+        <input id="username" type="text" placeholder="Username" autofocus required>   
+        <input id="password" type="password" placeholder="Password" required>
+    </fieldset>
+    <fieldset id="actions">
+        <input type="submit" id="submit" value="Log in" onclick="onLogin()">
+    </fieldset>
+
+</div>
+
+	<div id = "mbody">
 	<header id="header">
 		<hgroup>
 			<h1 class="site_title"><a href="index.html">Website Admin</a></h1>
@@ -189,7 +204,7 @@
 		<ul class="toggle">
 			<li class="icn_settings"><a href="#">Options</a></li>
 			<li class="icn_security"><a href="#">Security</a></li>
-			<li class="icn_jump_back"><a href="#">Logout</a></li>
+			<li class="icn_jump_back"><a href="#" onclick="onLogout()">Logout</a></li>
 		</ul>
 		
 		<footer>
@@ -770,7 +785,7 @@
 		
 		<div class="spacer"></div>
 	</section>
-
+	</div>
 
 </body>
 
