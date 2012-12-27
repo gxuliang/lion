@@ -65,3 +65,79 @@ function onLogout()
 	
 	
 }
+
+function onUpgrade(){
+	var fname = document.getElementById("filename").value;
+	var url = "cgi-bin/post.cgi";
+	   //alert(url.toString());
+	   request.open("POST", url, true);
+	   request.onreadystatechange = updateUpgrade;
+	   request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;charset=gb2312");
+	   var chr = "phone=" + fname.toString();
+	   request.send(chr.toString());
+	   alert("chr is :" + chr.toString());
+}
+
+function updateUpgrade(){
+	if (request.readyState == 4) {
+	  //alert("status is fewe");
+       if (request.status == 200) {
+         var response = request.responseText.split("|");
+         alert("aa:" + response[0].toString());	 
+
+         
+		   
+       } else
+         alert("status is " + request.status);
+     }
+}
+
+function operate(){
+	$("#submitForm").ajaxSubmit({  
+                    type: 'post',  
+                    dataType:"xml",
+                    url: "cgi-bin/post.cgi" ,  
+                    success: function(data){  
+                        alert( "success");  
+                        alert(data);
+                          
+                    },  
+                    error: function(XmlHttpRequest, textStatus, errorThrown){  
+                        alert( "error");  
+                    }  
+                });  
+                
+                return false;
+}
+
+function operate2() {
+    // jquery 表单提交
+    $("#submitForm").ajaxSubmit(function(message) {
+          // 对于表单提交成功后处理，message为提交页面operation.htm的返回内容
+          alert(message.toString());
+       });
+     
+    return false; // 必须返回false，否则表单会自己再做一次提交操作，并且页面跳转
+}
+
+function doUpload() {
+	// 上传方法
+	$.upload({
+			// 上传地址
+			url: '/upload', 
+			// 文件域名字
+			fileName: 'filedata', 
+			// 其他表单数据
+			params: {name: 'pxblog'},
+			// 上传完成后, 返回json, text
+			dataType: 'json',
+			// 上传之前回调,return true表示可继续上传
+			onSend: function() {
+					return true;
+			},
+			// 上传之后回调
+			onComplate: function(data) {
+					alert(data);
+			}
+	});
+}
