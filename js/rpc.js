@@ -92,7 +92,8 @@ function updateUpgrade(){
      }
 }
 
-function operate(){
+
+function operate2(){
 	$("#submitForm").ajaxSubmit({  
                     type: 'post',  
                     dataType:"xml",
@@ -109,8 +110,8 @@ function operate(){
                 
                 return false;
 }
-
-function operate2() {
+ 
+function operate() {
     // jquery 表单提交
     $("#submitForm").ajaxSubmit(function(message) {
           // 对于表单提交成功后处理，message为提交页面operation.htm的返回内容
@@ -119,6 +120,7 @@ function operate2() {
      
     return false; // 必须返回false，否则表单会自己再做一次提交操作，并且页面跳转
 }
+
 
 function doUpload() {
 	// 上传方法
